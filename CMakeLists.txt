@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(PROJECT_NAME matrix)
+set(PROJECT_NAME expression)
 project(${PROJECT_NAME})
 
 # TODO(Kornyakov): not sure if these lines are needed
