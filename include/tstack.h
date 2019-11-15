@@ -1,218 +1,143 @@
-﻿// ННГУ, ВМК, Курс "Методы программирования-2", С++, ООП
-//
-// utmatrix.h - Copyright (c) Гергель В.П. 07.05.2001
-//   Переработано для Microsoft Visual Studio 2008 Сысоевым А.В. (21.04.2015)
-//
-// Верхнетреугольная матрица - реализация на основе шаблона вектора
-
-#ifndef __TMATRIX_H__
-#define __TMATRIX_H__
+﻿#ifndef __TSTACK_H__
+#define __TSTACK_H__
 
 #include <iostream>
 
 using namespace std;
 
-const int MAX_VECTOR_SIZE = 100000000;
-const int MAX_MATRIX_SIZE = 10000;
+const int MAX_STACK_SIZE = 10000;
 
-// Шаблон вектора
 template <class ValType>
-class TVector
+class TStack
 {
 protected:
-  ValType *pVector;
-  int Size;       // размер вектора
-  int StartIndex; // индекс первого элемента вектора
+	ValType *pStack;
+	int Size;                  // размер стека
+	int TopElem;               // номер верхнего элемента
 public:
-  TVector(int s = 10, int si = 0);          // одновременно конструктор по умолчанию
-                                            // и конструктор с параметрами
-  TVector(const TVector &v);                // конструктор копирования
-  ~TVector();
-  int GetSize()      { return Size;       } // размер вектора
-  int GetStartIndex(){ return StartIndex; } // индекс первого элемента
-  ValType& operator[](int pos);             // доступ
-  bool operator==(const TVector &v) const;  // сравнение
-  bool operator!=(const TVector &v) const;  // сравнение
-  TVector& operator=(const TVector &v);     // присваивание
-
-  // скалярные операции
-  TVector  operator+(const ValType &val);   // прибавить скаляр
-  TVector  operator-(const ValType &val);   // вычесть скаляр
-  TVector  operator*(const ValType &val);   // умножить на скаляр
-
-  // векторные операции
-  TVector  operator+(const TVector &v);     // сложение
-  TVector  operator-(const TVector &v);     // вычитание
-  ValType  operator*(const TVector &v);     // скалярное произведение
-
-  // ввод-вывод
-  friend istream& operator>>(istream &in, TVector &v)
-  {
-    for (int i = 0; i < v.Size; i++)
-      in >> v.pVector[i];
-    return in;
-  }
-  friend ostream& operator<<(ostream &out, const TVector &v)
-  {
-    for (int i = 0; i < v.Size; i++)
-      out << v.pVector[i] << ' ';
-    return out;
-  }
+	TStack(int s = 6);         // конструктор с параметром
+	TStack(const TStack &s);   // конструктор копирования
+	~TStack();
+	TStack& operator= (const TStack &s); // присваивание
+	bool IsEmpty();            // узнать, пустой ли стек
+	bool IsFull();             // узнать, полон ли стек
+	void Clear();              // очистить стек
+	void Push(ValType elem);   // добавить элемент в стек
+	void Pop();                // удалить элемент из стека
+	TStack LoadStack();        // перенос элементов
+	bool operator==(const TStack &s) const;
+	bool operator!=(const TStack &s) const;
 };
 
 template <class ValType>
-TVector<ValType>::TVector(int s, int si)
+TStack<ValType>::TStack(int s)  // конструктор с параметром
 {
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> //конструктор копирования
-TVector<ValType>::TVector(const TVector<ValType> &v)
-{
-} /*-------------------------------------------------------------------------*/
+	if ((s < 0) || (s > MAX_STACK_SIZE)) throw "Error";
+	TopElem = -1;
+	Size = s;
+	pStack = new ValType[Size];
+}
 
 template <class ValType>
-TVector<ValType>::~TVector()
+TStack<ValType>::TStack(const TStack<ValType> &s) // конструктор копирования
 {
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // доступ
-ValType& TVector<ValType>::operator[](int pos)
-{
-    return pVector[0];
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // сравнение
-bool TVector<ValType>::operator==(const TVector &v) const
-{
-    return false;
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // сравнение
-bool TVector<ValType>::operator!=(const TVector &v) const
-{
-    return false;
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // присваивание
-TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
-{
-    return *this;
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // прибавить скаляр
-TVector<ValType> TVector<ValType>::operator+(const ValType &val)
-{
-    return TVector<ValType>();
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // вычесть скаляр
-TVector<ValType> TVector<ValType>::operator-(const ValType &val)
-{
-    return TVector<ValType>();
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // умножить на скаляр
-TVector<ValType> TVector<ValType>::operator*(const ValType &val)
-{
-    return TVector<ValType>();
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // сложение
-TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
-{
-    return TVector<ValType>();
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // вычитание
-TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v)
-{
-    return TVector<ValType>();
-} /*-------------------------------------------------------------------------*/
-
-template <class ValType> // скалярное произведение
-ValType TVector<ValType>::operator*(const TVector<ValType> &v)
-{
-    return TVector<ValType>();
-} /*-------------------------------------------------------------------------*/
-
-
-// Верхнетреугольная матрица
-template <class ValType>
-class TMatrix : public TVector<TVector<ValType> >
-{
-public:
-  TMatrix(int s = 10);                           
-  TMatrix(const TMatrix &mt);                    // копирование
-  TMatrix(const TVector<TVector<ValType> > &mt); // преобразование типа
-  bool operator==(const TMatrix &mt) const;      // сравнение
-  bool operator!=(const TMatrix &mt) const;      // сравнение
-  TMatrix& operator= (const TMatrix &mt);        // присваивание
-  TMatrix  operator+ (const TMatrix &mt);        // сложение
-  TMatrix  operator- (const TMatrix &mt);        // вычитание
-
-  // ввод / вывод
-  friend istream& operator>>(istream &in, TMatrix &mt)
-  {
-    for (int i = 0; i < mt.Size; i++)
-      in >> mt.pVector[i];
-    return in;
-  }
-  friend ostream & operator<<( ostream &out, const TMatrix &mt)
-  {
-    for (int i = 0; i < mt.Size; i++)
-      out << mt.pVector[i] << endl;
-    return out;
-  }
-};
+	Size = s.Size;
+	TopElem = s.TopElem;
+	pStack = new ValType[Size];
+	for (int i = 0; i < Size; i++)
+		pStack[i] = s.pStack[i];
+}
 
 template <class ValType>
-TMatrix<ValType>::TMatrix(int s): TVector<TVector<ValType> >(s)
+TStack<ValType>::~TStack()
 {
-    // по умолчанию создается квадратная матрица sхs
-    // надо заменить созданную матрицу верхнетреугольной
-    // вектора должны быть разной длины в матрице
-} /*-------------------------------------------------------------------------*/
+	delete[] pStack;
+}
 
-template <class ValType> // конструктор копирования
-TMatrix<ValType>::TMatrix(const TMatrix<ValType> &mt):
-  TVector<TVector<ValType> >(mt) {}
-
-template <class ValType> // конструктор преобразования типа
-TMatrix<ValType>::TMatrix(const TVector<TVector<ValType> > &mt):
-  TVector<TVector<ValType> >(mt) {}
+template <class ValType>
+TStack<ValType>& TStack<ValType>::operator=(const TStack &s) //присваивание 
+{
+	if ((Size != s.Size) || (TopElem != s.TopElem))
+	{
+		TopElem = s.TopElem;
+		Size = s.Size;
+		delete[] pStack;
+		pStack = new ValType[Size];
+	}
+	for (int i = 0; i <= TopElem; i++)
+		pStack[i] = s.pStack[i];
+	return *this;
+}
 
 template <class ValType> // сравнение
-bool TMatrix<ValType>::operator==(const TMatrix<ValType> &mt) const
+bool TStack<ValType>::operator==(const TStack &s) const
 {
-    return false;
-} /*-------------------------------------------------------------------------*/
+	bool flag = true;
+	if ((Size != s.Size) || (TopElem != s.TopElem)) return false;
+	for (int i = 0; i <= TopElem; i++)
+	{
+		if (pStack[i] != s.pStack[i])
+		{
+			flag = false;
+			break;
+		}
+	}
+	return flag;
+}
 
 template <class ValType> // сравнение
-bool TMatrix<ValType>::operator!=(const TMatrix<ValType> &mt) const
+bool TStack<ValType>::operator!=(const TStack &s) const
 {
-    return false;
-} /*-------------------------------------------------------------------------*/
+	if (s == *this) return false;
+	return true;
+}
 
-template <class ValType> // присваивание
-TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
+template <class ValType> // узнать, пустой ли стек
+bool TStack<ValType>::IsEmpty()
 {
-    return *this;
-} /*-------------------------------------------------------------------------*/
+	if (TopElem == -1) return true;
+	return false;
+}
 
-template <class ValType> // сложение
-TMatrix<ValType> TMatrix<ValType>::operator+(const TMatrix<ValType> &mt)
+template <class ValType> // узнать, заполнен ли стек
+bool TStack<ValType>::IsFull()
 {
-    // благодаря наследованию от TVector<TVector<ValType> > operator+
-    // уже есть, надо только его вызвать
-    return TMatrix<ValType>();
-} /*-------------------------------------------------------------------------*/
+	if (TopElem == Size - 1) return true;
+	return false;
+}
 
-template <class ValType> // вычитание
-TMatrix<ValType> TMatrix<ValType>::operator-(const TMatrix<ValType> &mt)
+template <class ValType>
+void TStack<ValType>::Clear() // очистить стек
 {
-    return TMatrix<ValType>();
-} /*--------------------------------------------------s-----------------------*/
+	TopElem = -1;
+}
 
-// TVector О3 Л2 П4 С6
-// TMatrix О2 Л2 П3 С3
+template <class ValType> // добавить элемент в стек
+void TStack<ValType>::Push(ValType elem)
+{
+	if (IsFull()) throw "Error";
+	TopElem = TopElem + 1;
+	pStack[TopElem] = elem;
+}
+
+template <class ValType> // удалить элемент из стека
+void TStack<ValType>::Pop()
+{
+	if (IsEmpty()) throw "Error";
+	pStack[TopElem] = '\0';
+	TopElem = TopElem - 1;
+}
+
+
+template <class ValType>
+TStack<ValType> TStack<ValType>::LoadStack()  // перенос элементов
+{
+	TStack temp(Size);
+	temp.TopElem = TopElem;
+	for (int i = 0; i <= TopElem; i++)
+		temp.pStack[i] = pStack[TopElem - i];
+	return temp;
+}
+
+
 #endif
