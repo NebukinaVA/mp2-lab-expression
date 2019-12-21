@@ -16,15 +16,15 @@ protected:
 	std::string Operations = "+-*/()";
 	int Priority[6] = { 3,3,2,2,1,1 };
 public:
-	TExpression(string exp = "1+1");     // конструктор с параметром
+	TExpression(string exp = "1+1");     // ГЄГ®Г­Г±ГІГ°ГіГЄГІГ®Г° Г± ГЇГ Г°Г Г¬ГҐГІГ°Г®Г¬
 	~TExpression();
 	string GetInfix() { return Infix; }
 	string GetPostfix() { return Postfix; }
-	void SetExpression(std::string exp); //получить выражение
+	void SetExpression(std::string exp); //ГЇГ®Г«ГіГ·ГЁГІГј ГўГ»Г°Г Г¦ГҐГ­ГЁГҐ
 	bool HasLetters(std::string exp);
-	bool IsCorrect(std::string exp);     //проверка правильности
-	void ToPostfix();                    //перевод в польскую запись
-	double Calculate();                  // вычисление
+	bool IsCorrect(std::string exp);     //ГЇГ°Г®ГўГҐГ°ГЄГ  ГЇГ°Г ГўГЁГ«ГјГ­Г®Г±ГІГЁ
+	void ToPostfix();                    //ГЇГҐГ°ГҐГўГ®Г¤ Гў ГЇГ®Г«ГјГ±ГЄГіГѕ Г§Г ГЇГЁГ±Гј
+	double Calculate();                  // ГўГ»Г·ГЁГ±Г«ГҐГ­ГЁГҐ
 	double StringToInt(std::string str);
 };
 
@@ -56,7 +56,7 @@ void TExpression::SetExpression(std::string exp)
 	Infix = temp;
 }
 
-bool TExpression::HasLetters(std::string exp) // проверить, есть ли буквы
+bool TExpression::HasLetters(std::string exp) // ГЇГ°Г®ГўГҐГ°ГЁГІГј, ГҐГ±ГІГј Г«ГЁ ГЎГіГЄГўГ»
 {
 	for (int i = 0; i < exp.length(); i++)  
 	{
@@ -68,7 +68,7 @@ bool TExpression::HasLetters(std::string exp) // проверить, есть ли буквы
 
 bool TExpression::IsCorrect(std::string exp)
 {
-	std::string US = "!@#№;$%:^&?.,<>{}[]|_="; // Unacceptable Symbols
+	std::string US = "!@#В№;$%:^&?.,<>{}[]|_="; // Unacceptable Symbols
 	int Pars = 0;  // parenthesis ()
 	int Ops = 0;   // operations
 	int len = exp.length();
@@ -211,20 +211,6 @@ double TExpression::Calculate()
 		}
 	}
 	return Stack.GetTop();
-}
-
-double TExpression::StringToInt(std::string str)
-{
-	int temp = 0;
-	int i = 0;
-	while ((str[i] >= 0x30) && (str[i] <= 0x39))
-	{
-		temp = temp + (str[i] & 0x0F);
-		temp = temp * 10;
-		i++;
-	}
-	temp = temp / 10;
-	return(temp);
 }
 
 #endif
