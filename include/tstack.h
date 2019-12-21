@@ -7,70 +7,71 @@ using namespace std;
 
 const int MAX_STACK_SIZE = 10000;
 
-template <class ValType>
+template <class T>
 class TStack
 {
 protected:
-	ValType *pStack;
+	T *pStack;
 	int Size;                  // размер стека
 	int TopElem;               // номер верхнего элемента
 public:
-	TStack(int s = 6);         // конструктор с параметром
+	TStack(int s = MAX_STACK_SIZE);         // конструктор с параметром
 	TStack(const TStack &s);   // конструктор копирования
 	~TStack();
 	TStack& operator= (const TStack &s); // присваивание
 	bool IsEmpty();            // узнать, пустой ли стек
 	bool IsFull();             // узнать, полон ли стек
 	void Clear();              // очистить стек
-	void Push(ValType elem);   // добавить элемент в стек
-	void Pop();                // удалить элемент из стека
-	TStack LoadStack();        // перенос элементов
+	void Push(T elem);         // добавить элемент в стек
+	T Pop();                // удалить элемент из стека
+	T GetTop();
+	void Repack();             // перепаковка
 	bool operator==(const TStack &s) const;
 	bool operator!=(const TStack &s) const;
 };
 
-template <class ValType>
-TStack<ValType>::TStack(int s)  // конструктор с параметром
+template <class T>
+TStack<T>::TStack(int s)  // конструктор с параметром
 {
 	if ((s < 0) || (s > MAX_STACK_SIZE)) throw "Error";
 	TopElem = -1;
 	Size = s;
-	pStack = new ValType[Size];
+	pStack = new T[Size];
 }
 
-template <class ValType>
-TStack<ValType>::TStack(const TStack<ValType> &s) // конструктор копирования
+template <class T>
+TStack<T>::TStack(const TStack<T> &s) // конструктор копирования
 {
 	Size = s.Size;
 	TopElem = s.TopElem;
-	pStack = new ValType[Size];
+	pStack = new T[Size];
 	for (int i = 0; i < Size; i++)
 		pStack[i] = s.pStack[i];
 }
 
-template <class ValType>
-TStack<ValType>::~TStack()
+template <class T>
+TStack<T>::~TStack()
 {
 	delete[] pStack;
 }
 
-template <class ValType>
-TStack<ValType>& TStack<ValType>::operator=(const TStack &s) //присваивание 
+template <class T>
+TStack<T>& TStack<T>::operator=(const TStack &s) //присваивание 
 {
 	if ((Size != s.Size) || (TopElem != s.TopElem))
 	{
 		TopElem = s.TopElem;
 		Size = s.Size;
 		delete[] pStack;
-		pStack = new ValType[Size];
+		pStack = new T[Size];
 	}
 	for (int i = 0; i <= TopElem; i++)
 		pStack[i] = s.pStack[i];
 	return *this;
 }
 
-template <class ValType> // сравнение
-bool TStack<ValType>::operator==(const TStack &s) const
+template <class T> // сравнение
+bool TStack<T>::operator==(const TStack &s) const
 {
 	bool flag = true;
 	if ((Size != s.Size) || (TopElem != s.TopElem)) return false;
@@ -85,59 +86,69 @@ bool TStack<ValType>::operator==(const TStack &s) const
 	return flag;
 }
 
-template <class ValType> // сравнение
-bool TStack<ValType>::operator!=(const TStack &s) const
+template <class T> // сравнение
+bool TStack<T>::operator!=(const TStack &s) const
 {
 	if (s == *this) return false;
 	return true;
 }
 
-template <class ValType> // узнать, пустой ли стек
-bool TStack<ValType>::IsEmpty()
+template <class T> // узнать, пустой ли стек
+bool TStack<T>::IsEmpty()
 {
 	if (TopElem == -1) return true;
 	return false;
 }
 
-template <class ValType> // узнать, заполнен ли стек
-bool TStack<ValType>::IsFull()
+template <class T> // узнать, заполнен ли стек
+bool TStack<T>::IsFull()
 {
 	if (TopElem == Size - 1) return true;
 	return false;
 }
 
-template <class ValType>
-void TStack<ValType>::Clear() // очистить стек
+template <class T>
+void TStack<T>::Clear() // очистить стек
 {
 	TopElem = -1;
 }
 
-template <class ValType> // добавить элемент в стек
-void TStack<ValType>::Push(ValType elem)
+template <class T> // добавить элемент в стек
+void TStack<T>::Push(T elem)
 {
-	if (IsFull()) throw "Error";
+	if (IsFull()) Repack();
 	TopElem = TopElem + 1;
 	pStack[TopElem] = elem;
 }
 
-template <class ValType> // удалить элемент из стека
-void TStack<ValType>::Pop()
+template <class T> // удалить элемент из стека
+T TStack<T>::Pop()
 {
 	if (IsEmpty()) throw "Error";
-	pStack[TopElem] = '\0';
 	TopElem = TopElem - 1;
+	return pStack[TopElem + 1];
 }
 
-
-template <class ValType>
-TStack<ValType> TStack<ValType>::LoadStack()  // перенос элементов
+template <class T>
+T TStack<T>::GetTop()
 {
-	TStack temp(Size);
-	temp.TopElem = TopElem;
-	for (int i = 0; i <= TopElem; i++)
-		temp.pStack[i] = pStack[TopElem - i];
-	return temp;
+	return pStack[TopElem];
 }
+
+
+template <class T> // перепаковать стек
+void TStack<T>::Repack()
+{
+	T *ptemp;
+	ptemp = new T[Size + 20];
+	for (int i = 0; i < Size; i++)
+		ptemp[i] = pStack[i];
+	TopElem = Size - 1;
+	Size = Size + 20;
+	delete[] pStack;
+	pStack = ptemp;
+}
+
 
 
 #endif
