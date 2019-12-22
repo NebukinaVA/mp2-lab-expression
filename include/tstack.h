@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 const int MAX_STACK_SIZE = 10000;
 
 template <class T>
