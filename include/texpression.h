@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <string>
-//#include <ctype.h>
 #include "tstack.h"
 
 class TExpression
@@ -23,7 +22,6 @@ public:
 	bool IsCorrect(std::string exp);     //проверка правильности
 	void ToPostfix();                    //перевод в польскую запись
 	double Calculate();                  // вычисление
-//	double StringToInt(std::string str);
 };
 
 TExpression::TExpression(std::string exp)
@@ -55,7 +53,7 @@ void TExpression::SetExpression(std::string exp)
 	Infix = temp;
 }
 
-bool TExpression::HasLetters(std::string exp) // проверить, есть ли буквы
+bool TExpression::HasLetters(std::string exp) 
 {
 	for (int i = 0; i < exp.length(); i++)  
 	{
@@ -67,7 +65,7 @@ bool TExpression::HasLetters(std::string exp) // проверить, есть ли буквы
 
 bool TExpression::IsCorrect(std::string exp)
 {
-	std::string US = "!@#є;$%:^&?.,<>{}[]|_="; // Unacceptable Symbols
+	std::string US = "!@#¬є;$%:^&?.,<>{}[]|_="; // Unacceptable Symbols
 	int Pars = 0;  // parenthesis ()
 	int Ops = 0;   // operations
 	int len = exp.length();
@@ -211,11 +209,6 @@ double TExpression::Calculate()
 			Nums.Push(result);
 			Ops.Pop();
 		}
-/*		default:
-		{
-			
-		}
-		*/
 		}
 	}
 	
