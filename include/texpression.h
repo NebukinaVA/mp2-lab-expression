@@ -156,63 +156,59 @@ double TExpression::Calculate()
 {
 	ToPostfix();
 	int len = Postfix.length();
-	TStack<char> Ops;
-	TStack<double> Nums;
-    double result = 0;
+	TStack<double> Stack;
+	double result = 0;
 	for (int i = 0; i < len; i++)
 	{
 		if (Operations.find(Postfix[i]) != std::string::npos)
-			Ops.Push(Postfix[i]);
-		else 
 		{
-	        std::string str;
+			switch (Postfix[i])
+			{
+			case '+':
+			{
+				double p = Stack.Pop();
+				result = Stack.Pop() + p;
+				Stack.Push(result);
+				break;
+			}
+			case '-':
+			{
+				double p = Stack.Pop();
+				result = Stack.Pop() - p;
+				Stack.Push(result);
+				break;
+
+			}
+			case '*':
+			{
+				double p = Stack.Pop();
+				result = Stack.Pop() * p;
+				Stack.Push(result);
+				break;
+			}
+			case '/':
+			{
+				double p = Stack.Pop();
+				if (p == 0) throw "Error! Division by zero";
+				result = Stack.Pop() / p;
+				Stack.Push(result);
+				break;
+			}
+			}
+		}
+		else
+		{
+			std::string str;
 			while (Postfix[i] != ';')
 			{
 				str += Postfix[i];
 				i++;
 			}
 			double number = std::stoi(str);
-			Nums.Push(number);
+			Stack.Push(number);
 		}
 	}
-	while(!Ops.IsEmpty()) 
-	{
-		switch (Ops.Pop())
-		{
-		case '+':
-		{
-			double p = Nums.Pop();
-			result = Nums.Pop() + p;
-			Nums.Push(result);
-			Ops.Pop();
-		}
-		case '-':
-		{
-			double p = Nums.Pop();
-			result = Nums.Pop() - p;
-			Nums.Push(result);
-			Ops.Pop();
-
-		}
-		case '*':
-		{
-			double p = Nums.Pop();
-			result = Nums.Pop() * p;
-			Nums.Push(result);
-			Ops.Pop();
-		}
-		case '/':
-		{
-			double p = Nums.Pop();
-			if (p == 0) throw "Error! Division by zero";
-			result = Nums.Pop() / p;
-			Nums.Push(result);
-			Ops.Pop();
-		}
-		}
-	}
-	
-	return Nums.GetTop();
+	return Stack.GetTop();
 }
 
 

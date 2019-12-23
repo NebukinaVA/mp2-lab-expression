@@ -133,7 +133,6 @@ T TStack<T>::GetTop()
 	return pStack[TopElem];
 }
 
-
 template <class T> // перепаковать стек
 void TStack<T>::Repack()
 {
