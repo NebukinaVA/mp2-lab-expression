@@ -3,6 +3,11 @@
 #include <gtest.h>
 
 using namespace std;
+/**/
+TEST(TExpression, can_checkkkkkkkkkkkkkkkkkkkkkkk)
+{
+	ASSERT_NO_THROW(TExpression exp);
+}
 
 TEST(TExpression, can_check_if_correct_1)
 {
@@ -54,9 +59,32 @@ TEST(TExpression, can_check_if_correct_8)
 
 TEST(TExpression, can_check_if_correct_9)
 {
-//	ASSERT_NO_THROW(TExpression exp("(5*6-7)/10"));
 	TExpression exp;
-	ASSERT_NO_THROW(exp.SetExpression("(5*6-7)/10"));
+	ASSERT_NO_THROW(exp.SetExpression("(5*6-7)/10")); 
+}
+
+TEST(TExpression, can_check_if_correct_10)
+{
+	TExpression exp;
+	ASSERT_ANY_THROW(exp.SetExpression("10*5+-7//*"));
+}
+
+TEST(TExpression, can_check_if_correct_11) 
+{
+	TExpression exp;
+	ASSERT_ANY_THROW(exp.SetExpression("55+"));
+}
+
+TEST(TExpression, can_check_if_correct_12) 
+{
+	TExpression exp;
+	ASSERT_ANY_THROW(exp.SetExpression(")5*5("));
+}
+
+TEST(TExpression, can_check_if_correct_13)
+{
+	TExpression exp;
+	ASSERT_NO_THROW(exp.SetExpression("(525*6-17)/112*5-100"));
 }
 
 TEST(TExpression, can_check_if_has_letters)

@@ -26,13 +26,13 @@ public:
 
 TExpression::TExpression(std::string exp)
 {
-	if (!IsCorrect(exp)) throw "Error";
 	int len = exp.length();
 	for (int i = 0; i < len; i++)
 	{
 		if (exp[i] != ' ')
 			Infix += exp[i];
 	}
+	if (!IsCorrect(Infix)) throw "Error";
 	if (Infix.length() < 1) throw "Error";
 }
 
@@ -42,13 +42,14 @@ TExpression::~TExpression()
 
 void TExpression::SetExpression(std::string exp)
 {
-	if (!IsCorrect(exp)) throw "Error";
 	std::string temp;
-	for (int i = 0; i < exp.length(); i++)
+	int len = exp.length();
+	for (int i = 0; i < len; i++)
 	{
 		if (exp[i] != ' ')
 			temp += exp[i];
 	}
+	if (!IsCorrect(temp)) throw "Error";
 	if (temp.length() < 1) throw "Error";
 	Infix = temp;
 }
@@ -65,29 +66,62 @@ bool TExpression::HasLetters(std::string exp)
 
 bool TExpression::IsCorrect(std::string exp)
 {
-	std::string US = "!@#¹;$%:^&?.,<>{}[]|_="; // Unacceptable Symbols
-	int Pars = 0;  // parenthesis ()
-	int Ops = 0;   // operations
-	int len = exp.length();
-	if (HasLetters(exp)) return false;
-	for (int i = 0; i < len; i++)
+	int Cond = 0;      // condition
+	int Pars = 0;      // parenthesis ()
+//	if (HasLetters(exp)) return false;
+	int i = 0;
+	while ((Cond != 3) && (Cond != 4))
 	{
-		if (US.find(exp[i]) != std::string::npos)
-			return false;
-		if (exp[i] == '(')
-			Pars++;
-		if (exp[i] == ')')
-			Pars--;
-		if (Operations.find(exp[i]) != std::string::npos)
-			Ops++;
-		else
-			Ops = 0;
-		if (Ops > 1)
-			return false;
+		switch (Cond)
+		{
+		case 0:
+		{
+			Cond = 3;
+			if (exp[i] == '\0')
+				Cond = 2;
+			if (exp[i] == '(')
+			{
+				Pars++;
+				Cond = 0;
+			}
+			if ((exp[i] >= '0') && (exp[i] <= '9'))
+			{
+				Cond = 1;
+				while ((exp[i + 1] >= '0') && (exp[i + 1] <= '9'))
+					i++;
+			}
+			break;
+		}
+		case 1:
+		{
+			Cond = 3;
+			if (exp[i] == '\0')
+				Cond = 2;
+			if (exp[i] == ')')
+			{
+				Pars--;
+				Cond = 1;
+				if (Pars < 0) Cond = 3;
+			}
+			if (Operations.find(exp[i]) != std::string::npos)
+			{
+				Cond = 0;
+				if (exp[i + 1] == '\0') Cond = 3;
+			}
+			break;
+		}
+		case 2:
+		{
+			Cond = 3;                // ERROR
+			if (Pars == 0) Cond = 4; // SUCCESS
+			break;
+		}
+		default: break;
+		}
+		i++;
 	}
-	if (Pars != 0)
-		return false;
-	return true;
+	if (Cond == 4) return true;
+	return false;
 }
 
 void TExpression::ToPostfix()
@@ -95,14 +129,14 @@ void TExpression::ToPostfix()
 	if(!Postfix.empty())
 		Postfix.erase();
 	std::string temp = "+-*/()";
-	TStack<char> Stack(MAX_STACK_SIZE);
+	TStack<char> Stack;
 	int len = Infix.length();
 	for (int i = 0; i < len; i++)
 	{
 		if (temp.find(Infix[i]) == std::string::npos)
 			Postfix += Infix[i];
 		if ((Infix[i] >= '0') && (Infix[i] <= '9'))
-			if (i != len)
+			if (i != len - 1)
 			{
 				if ((Infix[i + 1] < '0') || (Infix[i + 1] > '9'))
 					Postfix += ';';
