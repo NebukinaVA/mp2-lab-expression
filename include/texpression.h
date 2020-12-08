@@ -18,7 +18,6 @@ public:
 	std::string GetInfix() { return Infix; }
 	std::string GetPostfix() { return Postfix; }
 	void SetExpression(std::string exp); //получить выражение
-	bool HasLetters(std::string exp);
 	bool IsCorrect(std::string exp);     //проверка правильности
 	void ToPostfix();                    //перевод в польскую запись
 	double Calculate();                  // вычисление
@@ -54,21 +53,10 @@ void TExpression::SetExpression(std::string exp)
 	Infix = temp;
 }
 
-bool TExpression::HasLetters(std::string exp) 
-{
-	for (int i = 0; i < exp.length(); i++)  
-	{
-		if (isalpha(exp[i]))
-			return true;
-	}
-	return false;
-}
-
 bool TExpression::IsCorrect(std::string exp)
 {
 	int Cond = 0;      // condition
 	int Pars = 0;      // parenthesis ()
-//	if (HasLetters(exp)) return false;
 	int i = 0;
 	while ((Cond != 3) && (Cond != 4))
 	{
@@ -87,8 +75,17 @@ bool TExpression::IsCorrect(std::string exp)
 			if ((exp[i] >= '0') && (exp[i] <= '9'))
 			{
 				Cond = 1;
-				while ((exp[i + 1] >= '0') && (exp[i + 1] <= '9'))
+				int dot = 0;
+				while (((exp[i + 1] >= '0') && (exp[i + 1] <= '9')) || (exp[i + 1] == '.'))
+				{
 					i++;
+					if (exp[i] == '.') 
+					{ 
+						dot++;
+						if (exp[i + 1] == '.') dot--; 
+					}
+				}
+				if ((dot > 1) || (exp[i] == '.')) Cond = 3;
 			}
 			break;
 		}
@@ -138,7 +135,7 @@ void TExpression::ToPostfix()
 		if ((Infix[i] >= '0') && (Infix[i] <= '9'))
 			if (i != len - 1)
 			{
-				if ((Infix[i + 1] < '0') || (Infix[i + 1] > '9'))
+				if (((Infix[i + 1] < '0') || (Infix[i + 1] > '9')) && (Infix[i + 1] != '.'))
 					Postfix += ';';
 			}
 			else
@@ -238,7 +235,7 @@ double TExpression::Calculate()
 				str += Postfix[i];
 				i++;
 			}
-			double number = std::stoi(str);
+			double number = std::stod(str);
 			Stack.Push(number);
 		}
 	}

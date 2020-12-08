@@ -90,13 +90,30 @@ TEST(TExpression, can_check_if_correct_13)
 TEST(TExpression, can_check_if_has_letters)
 {
 	TExpression exp;
-	EXPECT_TRUE(exp.HasLetters("a*b"));
+	ASSERT_ANY_THROW(exp.SetExpression("a*b"));
 }
 
-TEST(TExpression, can_check_if_no_letters)
+TEST(TExpression, can_check_if_correct_with_float_1)
 {
 	TExpression exp;
-	EXPECT_FALSE(exp.HasLetters("5-70"));
+	ASSERT_NO_THROW(exp.SetExpression("5.15+2*0.005"));
+}
+
+TEST(TExpression, can_check_if_correct_with_float_2)
+{
+	TExpression exp;
+	ASSERT_ANY_THROW(exp.SetExpression("515.+2*0.005"));
+}
+TEST(TExpression, can_check_if_correct_with_float_3)
+{
+	TExpression exp;
+	ASSERT_ANY_THROW(exp.SetExpression("5.02.66+2*0.005"));
+}
+
+TEST(TExpression, can_check_if_correct_with_float_4)
+{
+	TExpression exp;
+	ASSERT_NO_THROW(exp.SetExpression("5..02+2*0.005"));
 }
 
 TEST(TExpression, can_transfer_to_postfix_1)
@@ -110,7 +127,7 @@ TEST(TExpression, can_transfer_to_postfix_2)
 {
 	TExpression exp("5+5");
 	exp.ToPostfix();
-	EXPECT_EQ(exp.GetPostfix(), "5;5;+"); //5;5;+
+	EXPECT_EQ(exp.GetPostfix(), "5;5;+");
 
 }
 
@@ -133,6 +150,20 @@ TEST(TExpression, can_transfer_to_postfix_5)
 	TExpression exp("15*4+(6+2)");
 	exp.ToPostfix();
 	EXPECT_EQ(exp.GetPostfix(), "15;4;*6;2;++");
+}
+
+TEST(TExpression, can_transfer_to_postfix_with_float_1)
+{
+	TExpression exp("5.5+5.5");
+	exp.ToPostfix();
+	EXPECT_EQ(exp.GetPostfix(), "5.5;5.5;+"); 
+}
+
+TEST(TExpression, can_transfer_to_postfix_with_float_2)
+{
+	TExpression exp("1.5*4+(6.6+2)");
+	exp.ToPostfix();
+	EXPECT_EQ(exp.GetPostfix(), "1.5;4;*6.6;2;++");
 }
 
 TEST(TExpression, can_transfer_to_postfix_different_expressions)
@@ -173,6 +204,12 @@ TEST(TExpression, can_calculate_5)
 {
 	TExpression exp("(6+10-4)/10");
 	EXPECT_EQ(exp.Calculate(), (6.0 + 10.0 - 4.0) / 10.0);
+}
+
+TEST(TExpression, can_calculate_with_float_1)
+{
+	TExpression exp("5.5+5.5");
+	EXPECT_EQ(exp.Calculate(), 11.0);
 }
 
 TEST(TExpression, throws_when_division_by_zero)
